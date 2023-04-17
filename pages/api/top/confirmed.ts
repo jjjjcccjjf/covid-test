@@ -1,35 +1,35 @@
-import fs from 'fs';
-import path from "path";
 import type { NextApiRequest, NextApiResponse } from "next"
 import { AppDataSource } from "@/orm/datasource"
-import { parse } from 'csv-parse'
+import { CovidObservations } from "@/orm/entities/CovidObservations";
 
 export default async function asynchandler(req: NextApiRequest, res: NextApiResponse<any>) {
 
-    // AppDataSource.initialize()
-    // .then(() => {
-        // res.status(200).json({message: process.env.HOST})
-        // res.status(200).json({message: "DB initialized"})
-    // })
-    // .catch((error) => console.log(error))
+    const limit = Number(req.query.max_results)
+    const dateString = req.query.observation_date
 
+    await AppDataSource.initialize()
+        .then(() => {
+            console.log('DB initialized successfully')
+        })
+        .catch((error) => {
+            console.log(error)
+        })
 
-    const csvFilePath = path.join(process.cwd(), 'public', 'covid_19_data.csv');
-    const csvData = fs.readFileSync(csvFilePath, 'utf-8');
+    const result = await AppDataSource
+        .getRepository(CovidObservations)
+        .createQueryBuilder("covid")
+        .select("covid.country_region as country")
+        .addSelect("SUM(covid.confirmed) as confirmed")
+        .addSelect("SUM(covid.deaths) as deaths")
+        .addSelect("SUM(covid.recovered) as recovered")
+        .where("DATE(covid.observation_date) = :date", { date: dateString })
+        .groupBy("covid.country_region")
+        .orderBy("confirmed", "DESC")
+        .limit(limit)
+        .getRawMany()
 
-    parse(csvData, {
-        columns: ['sno', 'observation_date', 'province_state', 'country_region', 'last_update', 'confirmed', 'deaths', 'recovered'],
-        cast: true,
-        cast_date: true,
-        skip_empty_lines: true,
-        from: 2,
-    }, (err, output) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal server error');
-        } else {
-            res.status(200).json(output);
-        }
-    });
-
+    res.status(200).json({
+        observation_date: dateString,
+        countries: result
+    })
 }

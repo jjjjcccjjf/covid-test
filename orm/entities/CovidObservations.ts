@@ -5,16 +5,22 @@ export class CovidObservations {
     @PrimaryGeneratedColumn()
     id!: number
 
-    @Column("text")
-    sno!: string
-    
+    @Column()
+    sno!: number
+
     @Column()
     observation_date!: Date
 
-    @Column("text")
+    @Column({
+        type: "text",
+        nullable: true
+    })
     province_state!: string
 
-    @Column("text")
+    @Column({
+        type: "text",
+        nullable: true
+    })
     country_region!: string
 
     @Column()
@@ -25,7 +31,7 @@ export class CovidObservations {
 
     @Column()
     deaths!: number
-    
+
     @Column()
     recovered!: number
 }
