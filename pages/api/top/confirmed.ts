@@ -1,40 +1,56 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { AppDataSource } from "@/orm/datasource"
-import { CovidObservations } from "@/orm/entities/CovidObservations";
+import { PrismaClient } from '@prisma/client'
+import { ResponseError, ObservationData, CountryData } from "@/interfaces"
 
-export default async function asynchandler(req: NextApiRequest, res: NextApiResponse<any>) {
+const prisma = new PrismaClient()
 
-    const limit = Number(req.query.max_results)
-    const dateString = req.query.observation_date
+type QueryResponse = {
+    country_region: string,
+    _sum: {
+        confirmed: number, deaths: number, recovered: number
+    }
+}
 
-    await AppDataSource.initialize()
-        .then(() => {
-            console.log('DB initialized successfully')
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+export default async function asynchandler(req: NextApiRequest, res: NextApiResponse<ObservationData | ResponseError>) {
 
     try {
-        const result = await AppDataSource
-            .getRepository(CovidObservations)
-            .createQueryBuilder("covid")
-            .select("covid.country_region as country")
-            .addSelect("SUM(covid.confirmed) as confirmed")
-            .addSelect("SUM(covid.deaths) as deaths")
-            .addSelect("SUM(covid.recovered) as recovered")
-            .where("DATE(covid.observation_date) = :date", { date: dateString })
-            .groupBy("covid.country_region")
-            .orderBy("confirmed", "DESC")
-            .limit(limit)
-            .getRawMany()
 
-        res.status(200).json({
-            observation_date: dateString,
-            countries: result
+        const limit = Number(req.query.max_results)
+        const dateString = String(req.query.observation_date)
+
+        const result = await prisma.covid_observations.groupBy({
+            by: ["country_region"],
+            where: {
+                observation_date: {
+                    equals: new Date(dateString)
+                }
+            },
+            _sum: {
+                confirmed: true,
+                deaths: true,
+                recovered: true
+            },
+            orderBy: {
+                _sum: {
+                    confirmed: 'desc'
+                }
+            },
+            take: limit
+        });
+
+        const filteredResult = result.map((item) => {
+            const countryData: CountryData = {
+                country: String(item.country_region), confirmed: Number(item._sum.confirmed), deaths: Number(item._sum.deaths), recovered: Number(item._sum.recovered)
+            }
+            return countryData
         })
-    } catch (err: any) {
-        res.status(400).json({ errors: err.message })
-    }
 
+        res.status(200).json({ observation_date: dateString, countries: filteredResult })
+    } catch (error: any) {
+        console.log(error)
+        res.status(400).json({ errors: error.message })
+    } finally {
+        await prisma.$disconnect()
+    }
+ 
 }

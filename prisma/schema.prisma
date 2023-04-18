@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model covid_observations {
+  id               Int      @id(map: "PK_98c0567851ee6188c95b4973437") @default(autoincrement())
+  observation_date DateTime @db.Timestamp(6)
+  province_state   String?
+  country_region   String?
+  last_update      DateTime @db.Timestamp(6)
+  confirmed        Int
+  deaths           Int
+  recovered        Int
+  sno              Int
+}
