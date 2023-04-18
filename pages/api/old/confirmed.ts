@@ -11,7 +11,7 @@ export default async function asynchandler(req: NextApiRequest, res: NextApiResp
         .then(() => {
             console.log('DB initialized successfully')
         })
-        .catch((error) => {
+        .catch((error: any) => {
             console.log(error)
         })
 

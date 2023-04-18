@@ -17,6 +17,7 @@ export default async function asynchandler(req: NextApiRequest, res: NextApiResp
 
         const limit = Number(req.query.max_results)
         const dateString = String(req.query.observation_date)
+        // return res.status(200).json({errors: Date.parse(dateString)})
 
         const result = await prisma.covid_observations.groupBy({
             by: ["country_region"],
