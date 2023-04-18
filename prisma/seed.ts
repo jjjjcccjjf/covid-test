@@ -7,6 +7,8 @@ const prisma = new PrismaClient()
 async function parseFromCsvFile(): Promise<any[]> {
 
     try {
+        await prisma.$executeRawUnsafe(`TRUNCATE TABLE covid_observations RESTART IDENTITY;`)
+
         const csvFilePath = path.join(process.cwd(), 'public', 'covid_19_data.csv');
         const csvData = await fs.promises.readFile(csvFilePath, 'utf-8');
         const output = await new Promise<any[]>((resolve, reject) => {
