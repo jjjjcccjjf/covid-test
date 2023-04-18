@@ -1,4 +1,11 @@
 ## Table of Contents
+* [Project Requirements](#project-requirements)
+* [Getting Started](#getting-started)
+  * [Testing Live](#1-testing-live)
+  * [Running on your development machine](#2-running-on-your-development-machine)
+* [Application URL](#application-url)
+* [Endpoints](#endpoints)
+  * [Get top confirmed cases by observation date](#get-top-confirmed-cases-by-observation-date)
 
 ## Project Requirements
 - [ ] Download the COVID-19 data set (covid_19_data.csv). 
