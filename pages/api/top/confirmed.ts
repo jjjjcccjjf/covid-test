@@ -8,9 +8,11 @@ export default async function asynchandler(req: NextApiRequest, res: NextApiResp
 
     try {
 
+        // Get our query strings
         const limit = Number(req.query.max_results)
         const dateString = String(req.query.observation_date)
 
+        // This is our query to the covid_observations table
         const result = await prisma.covid_observations.groupBy({
             by: ["country_region"],
             where: {
@@ -31,6 +33,7 @@ export default async function asynchandler(req: NextApiRequest, res: NextApiResp
             take: limit
         });
 
+        // We format the result of the query so it matches the desired shape of our response
         const filteredResult = result.map((item) => {
             const countryData: CountryData = {
                 country: String(item.country_region), confirmed: Number(item._sum.confirmed), deaths: Number(item._sum.deaths), recovered: Number(item._sum.recovered)
