@@ -24,7 +24,7 @@ I have uploaded this project to the following URL for convenience:
 
 `https://covid-test-vert.vercel.app/api`
 
-You can immediately consume the API using the browser or API clients such as Postman.
+You can immediately consume the API using the `browser` or API clients such as `Postman`.
 
 ## 2.) Running on your development machine
 
@@ -32,19 +32,23 @@ You can immediately consume the API using the browser or API clients such as Pos
 ```bash
 # install dependencies
 npm install
+```
+### Step 2
+Populate the DB connection string (See `.env.example`), and save it to `.env` file on the root directory.
 
+```env
+DATABASE_URL=postgresql://test:test@localhost:5432/test
+```
+Then seed the database.
+
+```bash
 # seed the database
 npx prisma db seed
 ```
 
-**NOTE**: On production builds, the seeding process is automatically executed upon application bootstrap. (See `package.json -> scripts -> postbuild`). But the script won't run on dev environment so we have to manually seed the DB.
+**NOTE**: On production builds, the seeding process is **automatically executed** upon application bootstrap. (See `package.json -> scripts -> postbuild`). Since we are on a development environment, the script won't run so we have to manually seed the DB.
 
-### Step 2
-Populate environment variables (See `.env.example`), and save it to `.env` file on the root directory.
 
-```env
-DATABASE_URL=postgresql://example:example@localhost:5432/example
-```
 ### Step 3
 ```bash
 # run development server
@@ -99,3 +103,7 @@ Endpoint: `/top/confirmed`
    ]
 }
 ```
+
+---
+
+🚨 You have reached the end of the README file. 🚨
