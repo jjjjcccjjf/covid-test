@@ -24,7 +24,7 @@ I have uploaded this project to the following URL for convenience:
 
 `https://covid-test-vert.vercel.app/api`
 
-And you can immediately consume the API.
+You can immediately consume the API using the browser or API clients such as Postman.
 
 ## 2.) Running on your development machine
 
