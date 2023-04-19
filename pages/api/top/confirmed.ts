@@ -43,7 +43,7 @@ export default async function asynchandler(req: NextApiRequest, res: NextApiResp
 
         res.status(200).json({ observation_date: dateString, countries: filteredResult })
     } catch (error: any) {
-        console.log(error)
+        // console.log(error)
         res.status(400).json({ errors: error.message })
     } finally {
         await prisma.$disconnect()
