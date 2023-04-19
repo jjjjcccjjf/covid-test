@@ -3,6 +3,7 @@
 * [Getting Started](#getting-started)
   * [Testing Live](#1-testing-live)
   * [Running on your development machine](#2-running-on-your-development-machine)
+  * [Unit Testing](#unit-testing)
 * [Application URL](#application-url)
 * [Endpoints](#endpoints)
   * [Get top confirmed cases by observation date](#get-top-confirmed-cases-by-observation-date)
@@ -23,7 +24,7 @@ I have uploaded this project to the following URL for convenience:
 
 `https://covid-test-vert.vercel.app/api`
 
-And you can immediately test the API.
+And you can immediately consume the API.
 
 ## 2.) Running on your development machine
 
@@ -49,7 +50,11 @@ DATABASE_URL=postgresql://example:example@localhost:5432/example
 # run development server
 npm run dev
 ```
-You can now test the API.
+You can now consume the API.
+
+
+## Unit Testing
+Execute `npm run test`
 
 ## Application URL
 
