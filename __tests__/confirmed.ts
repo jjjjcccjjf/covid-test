@@ -94,5 +94,16 @@ describe('GET /api/top/confirmed', () => {
         })
     })
 
+    it('should handle invalid request methods', async () => {
+        const req = createRequest<ApiRequest>({ method: 'POST' })
+        const res = createResponse<ApiResponse>()
+
+        await asynchandler(req, res)
+
+        expect(res.statusCode).toBe(405)
+        expect(res._getJSONData()).toMatchObject({
+            errors: expect.any(String)
+        })
+    })
 
 })

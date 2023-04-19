@@ -2,9 +2,15 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { PrismaClient } from '@prisma/client'
 import { ResponseError, ObservationData, CountryData } from "@/interfaces"
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+    errorFormat: 'minimal',
+})
 
 export default async function asynchandler(req: NextApiRequest, res: NextApiResponse<ObservationData | ResponseError>) {
+
+    if (req.method !== 'GET') {
+        return res.status(405).json({ errors: `${req.method} method not allowed` })
+    }
 
     try {
 
@@ -48,5 +54,5 @@ export default async function asynchandler(req: NextApiRequest, res: NextApiResp
     } finally {
         await prisma.$disconnect()
     }
- 
+
 }
